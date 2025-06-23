@@ -1,24 +1,33 @@
-from flask import request
-import sqlite3
+class BankAccount:
+    def __init__(self):
+        self.account_number = None
+        self.account_type = None
+        self.account_owner_name = None
+        self.account_owner_ssn = None
+        self.balance = 0.0
 
-def search_user():
-    name = request.args.get("name")  # Tainted source
-    conn = sqlite3.connect("db.sqlite")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE name = '%s'" % name)  # Sink
+    def set_account_number(self, number):
+        self.account_number = number
 
-# SQL Injection via f-string
-def sqli_fstring(name):
-    cursor.execute(f"SELECT * FROM accounts WHERE name = '{name}'")
+    def set_account_type(self, acc_type):
+        self.account_type = acc_type
 
-# SQL Injection via .format()
-def sqli_format(name):
-    cursor.execute("SELECT * FROM accounts WHERE name = '{}'".format(name))
+    def set_account_owner_name(self, name):
+        self.account_owner_name = name
 
-# SQL Injection via old-style % formatting
-def sqli_percent(name):
-    cursor.execute("SELECT * FROM accounts WHERE name = '%s'" % name)
+    def set_account_owner_ssn(self, ssn):
+        self.account_owner_ssn = ssn
 
-# Django ORM raw query with concatenation
-def django_raw_sqli(name):
-    return Group.objects.raw("SELECT * FROM groups WHERE name = '" + name + "'")
+    def set_balance(self, amount):
+        self.balance = amount
+
+
+def create_bank_account(account_number, account_type, account_name, account_ssn, balance):
+    account = BankAccount()
+    account.set_account_number(account_number)
+    account.set_account_type(account_type)
+    account.set_account_owner_name(account_name)
+    account.set_account_owner_ssn(account_ssn)
+    account.set_balance(balance)
+
+    return account
